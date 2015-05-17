@@ -8,6 +8,9 @@
 download.file("http://d396qusza40orc.cloudfront.net/repdata/data/activity.zip", "activity.zip")
 unzip("activity.zip", exdir = "activity")
 activity<-read.csv("activity/activity.csv")
+
+temp2 <- mapply(function(x, y) paste0(rep(x, y), collapse = ""), 0, 4 - nchar(activity$interval))
+activity$interval <- paste0(temp2, activity$interval)
 ```
 
 ## What is mean total number of steps taken per day?
@@ -45,17 +48,40 @@ steps_median
 ## [1] 0
 ```
 
+```
+
 ## What is the average daily activity pattern?
 
+
+```r
+library(ggplot2)
+```
+
+```
+## Warning: package 'ggplot2' was built under R version 3.1.3
+```
+
+```r
+library(reshape2)
+```
+
+```
+## Warning: package 'reshape2' was built under R version 3.1.3
+```
+
+```r
+library(scales)
+```
+
+```
+## Warning: package 'scales' was built under R version 3.1.3
+```
 
 ```r
 steps_select2<-subset(activity,select=c(interval,steps))
 steps_clean2<-na.omit(steps_select2)
 steps_mean2<-ddply(steps_clean2,"interval", summarise, mean=mean(steps))
-plot(steps_mean2$interval,steps_mean2$mean,type="l",
-     main='Time series plot of steps taken by 5-minute interval',
-     xlab='5-minute interval',
-     ylab='No. of steps averaged across all days')
+ggplot(steps_mean2,aes(x=strptime(interval, format="%H%M"), y=mean, group=1))+geom_line()+scale_x_datetime(labels=date_format("%H:%M"))+xlab("Time")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
@@ -67,7 +93,11 @@ steps_max
 
 ```
 ##     interval     mean
-## 104      835 206.1698
+## 104     0835 206.1698
+```
+
+```r
+#Time where the no. of steps taken is at max on average is at 8:35am.
 ```
 
 
@@ -122,27 +152,12 @@ steps_median_new
 
 
 ```r
-library(ggplot2)
-```
-
-```
-## Warning: package 'ggplot2' was built under R version 3.1.3
-```
-
-```r
-library(reshape2)
-```
-
-```
-## Warning: package 'reshape2' was built under R version 3.1.3
-```
-
-```r
 combined$days<-weekdays(as.Date(combined$date))
 combined$days_label<-ifelse(combined$days=="Saturday"|combined$days=="Sunday",
                             "Weekend","Weekday")
 steps_combined<-ddply(combined,c("days_label","interval"), summarise, mean=mean(new))
-lc<-ggplot(steps_combined,aes(x=interval, y=mean, group=1))+geom_line()
+lc<-ggplot(steps_combined,aes(x=strptime(interval, format="%H%M"), y=mean, group=1))+geom_line()+scale_x_datetime(labels=date_format("%H:%M"))+xlab("Time")
+
 lc+facet_grid(days_label~.)
 ```
 
@@ -151,4 +166,5 @@ lc+facet_grid(days_label~.)
 ```r
 #Generally less steps were taken on weekend than on weekdays and steps taken on weekends do not vary as much as on weekedays.
 ```
+
 
