@@ -31,13 +31,13 @@ hist(steps_total$total,breaks=30,
 ![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
 
 ```r
-steps_mean<-mean(steps_clean$steps)
-steps_median<-median(steps_clean$steps)
+steps_mean<-mean(steps_total$total)
+steps_median<-median(steps_total$total)
 steps_mean
 ```
 
 ```
-## [1] 37.3826
+## [1] 10766.19
 ```
 
 ```r
@@ -45,7 +45,7 @@ steps_median
 ```
 
 ```
-## [1] 0
+## [1] 10765
 ```
 
 ```
@@ -105,6 +105,8 @@ steps_max
 
 
 ```r
+#Imputing missing values with the mean for that particular day.
+
 sum(is.na(activity$steps))
 ```
 

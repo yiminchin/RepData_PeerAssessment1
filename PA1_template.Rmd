@@ -31,8 +31,8 @@ hist(steps_total$total,breaks=30,
      xlab='Sum of steps'
      )
 
-steps_mean<-mean(steps_clean$steps)
-steps_median<-median(steps_clean$steps)
+steps_mean<-mean(steps_total$total)
+steps_median<-median(steps_total$total)
 steps_mean
 steps_median
 
@@ -64,6 +64,9 @@ steps_max
 ## Imputing missing values
 
 ```{r, echo=TRUE}
+
+#Imputing missing values with the mean for that particular day.
+
 sum(is.na(activity$steps))
 set_to_zero<-activity
 set_to_zero[is.na(set_to_zero)]<-0
